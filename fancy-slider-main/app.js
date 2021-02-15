@@ -25,26 +25,28 @@ const showImages = (images) => {
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
   })
-
+  
 }
 
 const getImages = (query) => {
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
-    .then(data => showImages(data.hitS))
+    .then(data => showImages(data.hits))
     .catch(err => console.log(err))
 }
 
 let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
-  element.classList.add('added');
+  // console.log(element)
+  element.classList.toggle('added');
  
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    // alert('Hey, Already added !')
+    // element.classList.remove('added')
   }
 }
 var timer
@@ -67,7 +69,7 @@ const createSlider = () => {
   document.querySelector('.main').style.display = 'block';
   // hide image aria
   imagesArea.style.display = 'none';
-  const duration = document.getElementById('duration').value || 1000;
+  const duration = document.getElementById('doration').value && 1000;
   sliders.forEach(slide => {
     let item = document.createElement('div')
     item.className = "slider-item";
@@ -109,14 +111,32 @@ const changeSlide = (index) => {
   items[index].style.display = "block"
 }
 
-searchBtn.addEventListener('click', function () {
-  document.querySelector('.main').style.display = 'none';
-  clearInterval(timer);
-  const search = document.getElementById('search');
-  getImages(search.value)
-  sliders.length = 0;
-})
+// searchBtn.addEventListener('click', function () {
+  function btnHandler(){
+    document.querySelector('.main').style.display = 'none';
+    clearInterval(timer);
+    const search = document.getElementById('search');
+    getImages(search.value)
+    sliders.length = 0;
+  
+  }
+ 
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
+
+
+// document.getElementById('search').addEventListener('keypress', function search(event) {
+//   // console.log(event.key)
+//   if(event.key==='Enter') {
+//     // console.log('it is working')
+//     btnHandler()
+//     }
+  
+document.getElementById('search').addEventListener('keypress', function search(event){
+  if(event.key==='Enter'){
+    btnHandler()
+  }
+})
+
